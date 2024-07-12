@@ -1,13 +1,45 @@
 <header>
     <div class="container mt-3">
-        <h1 class="mb-3" style="text-align: center;">Lista de Productos</h1>
+        <h1 class="mb-3" style="text-align: center;">ModoFit Market</h1>
+        <hr>
     </div>
 </header>
 <main>
+
     <section>
+        <div class="container mt-3"></div>
+        <h3 class="mb-3" style="text-align: center;">Controles</h3>
+        </div>
+        <div class="container mt-3 d-flex justify-content-around flex-wrap">
+
+            {{#if products.hasPrevPage}}
+            <a href="/products?page={{products.prevPage}}"><button>Anterior</button></a>
+            {{/if}}
+
+            {{#if products.hasNextPage}}
+            <a href="/products?page={{products.nextPage}}{{products.sort}}"><button>Siguiente</button></a>
+            {{/if}}
+
+            <a href="/products?page={{products.page}}&sort=0"><button>⬇</button></a>
+            <a href="/products?page={{products.page}}&sort=1"><button>⬆</button></a>
+            <a href="/products?page={{products.page}}"><button>⬌</button></a>
+
+            <p>
+                Página <span id="page">{{products.page}}</span> de <span id="total-pages">{{products.totalPages}}</span>
+                <br>
+                <span>{{products.totalDocs}}</span> Documentos
+            </p>
+        </div>
+        </div>
+    </section>
+    <hr>
+    <section>
+        <div class="container mt-3"></div>
+        <h3 class="mb-3" style="text-align: center;">Lista de Productos</h3>
+        </div>
         <div class="d-flex justify-content-around flex-wrap">
             <!-- Sin Websockets -->
-            {{#each products}}
+            {{#each products.docs}}
             <div class="col-md-4 d-flex justify-content-around">
                 <div class="card mb-4" style="width: 20rem">
                     <img src=../public/images/{{this.thumbnails}} class="card-img-top" alt="{{this.code}}">
