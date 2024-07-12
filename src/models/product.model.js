@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 const productSchema = new Schema({
     title: { type: String, required: true, trim: true },
@@ -10,6 +11,9 @@ const productSchema = new Schema({
     category: { type: String, required: true },
     thumbnails: { type: String, required: false, trim: true },
 });
+
+// Agrega mongoose-paginate-v2 para habilitar las funcionalidades de paginación.
+productSchema.plugin(paginate);
 
 const ProductModel = model("products", productSchema);
 

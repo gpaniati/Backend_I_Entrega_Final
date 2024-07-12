@@ -15,13 +15,31 @@ export default class ProductsManager {
         this.#productModel = ProductModel;
     }
 
-    getAll = async () => {
-        /*  El método lean() utiliza después del método find() para
-            devolver los documentos como objetos JavaScript simples
-            en lugar de instancias de un Model de Mongoose.
-        */
+    getAll = async (paramFilters) => {
         try {
-            const products = await this.#productModel.find().lean();
+
+            const $and = [];
+
+            if (paramFilters?.status) $and.push({ name:  paramFilters.status });
+            if (paramFilters?.price) $and.push({ price:  paramFilters.price });
+            if (paramFilters?.category) $and.push({ category:  paramFilters.category });
+
+            const filters = $and.length > 0 ? { $and } : {};
+
+            const sort = {
+                asc: { price: 1 },
+                desc: { price: -1 },
+            };
+
+            const paginationOptions = {
+                limit: paramFilters.limit ?? 10,
+                page: paramFilters.page ?? 1,
+                sort: sort[paramFilters?.sort] ?? {},
+                lean: true,
+            };
+
+            console.log(paginationOptions);
+            const products = await this.#productModel.paginate(filters, paginationOptions);
             return products;
 
         }catch(error){

@@ -21,7 +21,7 @@ const productsManager = new ProductsManager();
 // Listar todos los productos de la base.
 router.get("/", async (req, res) => {
     try {
-        const productsFound = await productsManager.getAll();
+        const productsFound = await productsManager.getAll(req.query);
         res.status(200).json({ status: true, payload: productsFound });
     } catch (error) {
         errorHandler(res, error.message);
