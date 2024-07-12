@@ -2,6 +2,7 @@ import express from "express";
 import paths from "./utils/paths.js";
 import mongoDB from "./config/mongoose.config.js";
 import apiProductsRouter from "./routes/api.products.router.js";
+import appProductsRouter from "./routes/app.products.router.js";
 
 const server = express();
 const PORT = 8080;
@@ -15,6 +16,7 @@ server.use("/public", express.static(paths.public));
 
 // Definición de enrutadores
 //server.use("/api/students", apiStudentsRouter);
+server.use("/products", appProductsRouter);
 server.use("/api/products", apiProductsRouter);
 
 // Control de rutas inexistentes
