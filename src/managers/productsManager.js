@@ -26,7 +26,7 @@ export default class ProductsManager {
         return product;
     };
 
-    insertOne = async (data, file) => {
+    insertOneById = async (data, file) => {
         try{
             const productCreated = new ProductModel(data);
             productCreated.thumbnails = file?.filename ?? null;
@@ -40,7 +40,7 @@ export default class ProductsManager {
         }
     };
 
-    updateOne = async (id, thumbnail, data) => {
+    updateOneById = async (id, thumbnail, data) => {
         try{
             if (!mongoDB.isValidID(id)){
                 return null;
@@ -51,6 +51,7 @@ export default class ProductsManager {
             const product = await this.#productModel.findByIdAndUpdate(id, data, options);
 
             if (thumbnail != data.thumbnail) {
+                //Verificar q se borre la imagen.
                 await fileSystem.deleteImage(thumbnail);
             }
             return product;
@@ -60,11 +61,12 @@ export default class ProductsManager {
         }
     };
 
-    deleteOne = async (id, thumbnail) => {
+    deleteOneById = async (id, thumbnail) => {
         if (!mongoDB.isValidID(id)){
             return null;
         }
         const product = await this.#productModel.findByIdAndDelete(id);
+        console.log(thumbnail);
         await fileSystem.deleteImage(thumbnail);
 
         return product;
