@@ -19,17 +19,16 @@ export default class ProductsManager {
         try {
 
             const $and = [];
-
+            //Disponibilidad: true : Disponible ; false: No disponible
             if (paramFilters?.status) $and.push({ name:  paramFilters.status });
-            if (paramFilters?.price) $and.push({ price:  paramFilters.price });
             if (paramFilters?.category) $and.push({ category:  paramFilters.category });
 
             const filters = $and.length > 0 ? { $and } : {};
 
-            const sort = {
-                asc: { price: 1 },
-                desc: { price: -1 },
-            };
+            //Parametro SORT del request (0 o 1);
+            //Posicion 0 del vector (price:1 => ascendente)
+            //Posicion 1 del vector (price:-1 => descendente)
+            const sort = [ { price: 1 }, { price: -1 } ];
 
             const paginationOptions = {
                 limit: paramFilters.limit ?? 10,
@@ -38,7 +37,6 @@ export default class ProductsManager {
                 lean: true,
             };
 
-            console.log(paginationOptions);
             const products = await this.#productModel.paginate(filters, paginationOptions);
             return products;
 
