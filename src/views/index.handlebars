@@ -1,0 +1,24 @@
+<header>
+    <div class="container mt-3">
+        <h1 class="mb-3" style="text-align: center;">Lista de Productos</h1>
+    </div>
+</header>
+<main>
+    <section>
+        <div class="d-flex justify-content-around flex-wrap">
+            <!-- Sin Websockets -->
+            {{#each productos}}
+            <div class="col-md-4 d-flex justify-content-around">
+                <div class="card mb-4" style="width: 20rem">
+                    <img src="{{thumbnails}}" class="card-img-top" alt="{{code}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{title}}</h5>
+                        <p class="card-text">{{description}}</p>
+                        <p class="card-text"><strong>Precio: ${{price}}</strong></p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </section>
+</main>
