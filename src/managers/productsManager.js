@@ -1,101 +1,72 @@
-import fs from "fs";
-import path from "path";
+import ProductModel from "../models/product.model.js";
+import mongoDB from "../config/mongoose.config.js";
+import fileSystem from "../utils/fileSystem.js";
 
-export default class ProductManager {
-    #rutaDelArchivoDeProductosJSON;
+export default class ProductsManager {
+    #productModel;
 
-    constructor() {
-        this.#rutaDelArchivoDeProductosJSON = path.join("./src/files", "products.json");
+    constructor () {
+        this.#productModel = ProductModel;
     }
 
-    //Genera Id de nuevo producto.
-    #generarIdProducto = async () => {
-        let mayorId = 0;
-        const productos = await this.#obtenerProductos();
-        productos.forEach((producto) => {
-            if (producto.id > mayorId) {
-                mayorId = producto.id;
-            }
-        });
-        return mayorId + 1;
+    getAll = async () => {
+        /*  El método lean() utiliza después del método find() para
+            devolver los documentos como objetos JavaScript simples
+            en lugar de instancias de un Model de Mongoose.
+        */
+        const products = await this.#productModel.find().lean();
+        return products;
     };
 
-     #obtenerProductos = async () => {
-        // Se valida que exista el archivo de products.json
-        // Caso contrario, se crea dicho archivo.
-        if (!fs.existsSync(this.#rutaDelArchivoDeProductosJSON)) {
-            await fs.promises.writeFile(this.#rutaDelArchivoDeProductosJSON, "[]");
+    getOneId = async (id) => {
+        if (!mongoDB.isValidID(id)){
+            return null;
         }
+        const product = await this.#productModel.findById(id);
+        return product;
+    };
 
-        // Se carga el contenido del archivo products.json y se retorna en formato JSON
-        const productosJSON = await fs.promises.readFile(this.#rutaDelArchivoDeProductosJSON, "utf8");
+    insertOne = async (data, file) => {
+        try{
+            const productCreated = new ProductModel(data);
+            productCreated.thumbnails = file?.filename ?? null;
 
-        // Se convierte de JSON a Array y se retorna el array de productos
-        return JSON.parse(productosJSON);
-    }
+            await productCreated.save();
+            return productCreated;
+        }catch (error) {
+            console.log(error.message);
+            await fileSystem.deleteImage(data.thumbnail);
+            throw new Error("Faltan datos");
+        }
+    };
 
-    #persistirProducto = async (nuevoProducto) => {
-        const productos = await this.#obtenerProductos();
+    updateOne = async (id, thumbnail, data) => {
+        try{
+            if (!mongoDB.isValidID(id)){
+                return null;
+            }
+            const options = {
+                new: true,
+            };
+            const product = await this.#productModel.findByIdAndUpdate(id, data, options);
 
-        // Se agrega el Producto al array de productos
-        productos.push(nuevoProducto);
+            if (thumbnail != data.thumbnail) {
+                await fileSystem.deleteImage(thumbnail);
+            }
+            return product;
+        }catch (error) {
+            console.log(error.message);
+            throw new Error("Faltan datos");
+        }
+    };
 
-        // Se vuelve a convertir a JSON y se sobrescribe el archivo products.json
-        const productosActualizadosJSON = JSON.stringify(productos, null, "\t");
-        await fs.promises.writeFile(this.#rutaDelArchivoDeProductosJSON, productosActualizadosJSON);
-    }
+    deleteOne = async (id, thumbnail) => {
+        if (!mongoDB.isValidID(id)){
+            return null;
+        }
+        const product = await this.#productModel.findByIdAndDelete(id);
+        await fileSystem.deleteImage(thumbnail);
 
-    eliminarProducto = async (idProducto) => {
-        const productos = await this.#obtenerProductos();
-
-        // Se quita el Producto al array de productos
-        const productosF = productos.filter((producto) => producto.id != idProducto);
-
-        // Se vuelve a convertir a JSON y se sobrescribe el archivo products.json
-        const productosActualizadosJSON = JSON.stringify(productosF, null, "\t");
-        await fs.promises.writeFile(this.#rutaDelArchivoDeProductosJSON, productosActualizadosJSON);
-    }
-
-    actualizarProducto = async ({ id, ...resto }) => {
-        // Se quita el Producto a actualizar del archivo de productos.
-        await this.eliminarProducto(Number(id));
-        const productoActualizado = { id, ...resto };
-
-        //Se inserta el producto con los datos actualizados.
-        await this.#persistirProducto(productoActualizado);
-    }
-
-    //Valida si existe el porducto con id pasado por parametro.
-    existeProducto = async (idProducto) => {
-        const productosExistentes = await this.#obtenerProductos();
-        const productoExistente = productosExistentes.find((producto) => producto.id === Number(idProducto));
-
-        if(!productoExistente)
-            return false;
-
-        return true;
-    }
-
-    //Crea e agrega un producto nuevo.
-    agregarProducto = async (title, description, code, price, status, stock, category, thumbnails) => {
-        const idProducto = await this.#generarIdProducto();
-        const nuevoProducto = {
-            id: idProducto,
-            title,
-            description,
-            code,
-            price,
-            status,
-            stock,
-            category,
-            thumbnails
-        };
-
-        await this.#persistirProducto(nuevoProducto);
-    }
-
-    consultarProductos = async () => {
-        const productos = await this.#obtenerProductos();
-        return productos;
-    }
+        return product;
+    };
 }
