@@ -1,6 +1,12 @@
+import mongoose from "mongoose";
 import ProductModel from "../models/product.model.js";
 import mongoDB from "../config/mongoose.config.js";
 import fileSystem from "../utils/fileSystem.js";
+
+import {
+    ERROR_INVALID_ID,
+    ERROR_NOT_FOUND_ID,
+} from "../constants/messages.constant.js";
 
 export default class ProductsManager {
     #productModel;
@@ -14,19 +20,34 @@ export default class ProductsManager {
             devolver los documentos como objetos JavaScript simples
             en lugar de instancias de un Model de Mongoose.
         */
-        const products = await this.#productModel.find().lean();
-        return products;
-    };
+        try {
+            const products = await this.#productModel.find().lean();
+            return products;
 
-    getOneId = async (id) => {
-        if (!mongoDB.isValidID(id)){
-            return null;
+        }catch(error){
+            throw new Error(error.message);
         }
-        const product = await this.#productModel.findById(id);
-        return product;
     };
 
-    insertOneById = async (data, file) => {
+    getOneById = async (id) => {
+        try {
+            if (!mongoDB.isValidID(id)) {
+                throw new Error(ERROR_INVALID_ID);
+            }
+
+            const product = await this.#productModel.findById(id);
+
+            if (!product) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            return product;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+    insertOne = async (data, file) => {
         try{
             const productCreated = new ProductModel(data);
             productCreated.thumbnails = file?.filename ?? null;
@@ -34,41 +55,75 @@ export default class ProductsManager {
             await productCreated.save();
             return productCreated;
         }catch (error) {
-            console.log(error.message);
-            await fileSystem.deleteImage(data.thumbnail);
-            throw new Error("Faltan datos");
+            if (file) await fileSystem.deleteImage(file.filename);
+
+            if (error instanceof mongoose.Error.ValidationError) {
+                error.message = Object.values(error.errors)[0];
+            }
+
+            throw new Error(error.message);
         }
     };
 
-    updateOneById = async (id, thumbnail, data) => {
-        try{
-            if (!mongoDB.isValidID(id)){
-                return null;
+    updateOneById = async (id, data, file) => {
+        try {
+            if (!mongoDB.isValidID(id)) {
+                throw new Error(ERROR_INVALID_ID);
             }
-            const options = {
-                new: true,
-            };
-            const product = await this.#productModel.findByIdAndUpdate(id, data, options);
 
-            if (thumbnail != data.thumbnail) {
-                //Verificar q se borre la imagen.
-                await fileSystem.deleteImage(thumbnail);
+            const product = await this.#productModel.findById(id);
+            const currentThumbnail = product.thumbnails;
+            const newThumbnail = file?.filename;
+
+            if (!product) {
+                throw new Error(ERROR_NOT_FOUND_ID);
             }
+
+            product.title = data.title;
+            product.description = data.description;
+            product.code = data.code;
+            product.price = data.price;
+            product.status = data.status;
+            product.stock = data.stock;
+            product.category = data.category;
+            product.thumbnails = newThumbnail ?? currentThumbnail;
+
+            await product.save();
+
+            if (file && newThumbnail != currentThumbnail) {
+                await fileSystem.deleteImage(currentThumbnail);
+            }
+
             return product;
-        }catch (error) {
-            console.log(error.message);
-            throw new Error("Faltan datos");
+        } catch (error) {
+            if (file) await fileSystem.deleteImage(file.filename);
+
+            if (error instanceof mongoose.Error.ValidationError) {
+                error.message = Object.values(error.errors)[0];
+            }
+
+            throw new Error(error.message);
         }
     };
 
-    deleteOneById = async (id, thumbnail) => {
-        if (!mongoDB.isValidID(id)){
-            return null;
-        }
-        const product = await this.#productModel.findByIdAndDelete(id);
-        console.log(thumbnail);
-        await fileSystem.deleteImage(thumbnail);
+    deleteOneById = async (id) => {
+        try {
+            if (!mongoDB.isValidID(id)) {
+                throw new Error(ERROR_INVALID_ID);
+            }
 
-        return product;
+            const product = await this.#productModel.findById(id);
+
+            if (!product) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            await this.#productModel.findByIdAndDelete(id);
+            await fileSystem.deleteImage(product.thumbnails);
+
+            return product;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     };
 }
