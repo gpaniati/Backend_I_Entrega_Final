@@ -1,5 +1,6 @@
 import express from "express";
 import paths from "./utils/paths.js";
+import handlebars from "./config/handlebars.config.js";
 import mongoDB from "./config/mongoose.config.js";
 import apiProductsRouter from "./routes/api.products.router.js";
 import appProductsRouter from "./routes/app.products.router.js";
@@ -16,8 +17,11 @@ server.use("/public", express.static(paths.public));
 
 // Definición de enrutadores
 //server.use("/api/students", apiStudentsRouter);
-server.use("/products", appProductsRouter);
+server.use("/", appProductsRouter);
 server.use("/api/products", apiProductsRouter);
+
+// Configuración del motor de plantillas
+handlebars.config(server);
 
 // Control de rutas inexistentes
 server.use("*", (req, res) => {
