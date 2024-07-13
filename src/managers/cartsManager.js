@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import CartModel from "../models/car.model.js";
+import CartModel from "../models/cart.model.js";
 import mongoDB from "../config/mongoose.config.js";
 
 import {
@@ -29,7 +29,7 @@ export default class CartManager {
                 throw new Error(ERROR_INVALID_ID);
             }
 
-            const cart = await this.#cartModel.findById(id);
+            const cart = await this.#cartModel.findById(id).populate("products");
 
             if (!cart) {
                 throw new Error(ERROR_NOT_FOUND_ID);
@@ -55,8 +55,7 @@ export default class CartManager {
     };
 
     updateOneByIds = async (cid, pid) => {
-        try {
-            //console.log("Cid: " + cid + " Pid: " + pid);
+        try {Asi
             if ((!mongoDB.isValidID(cid)) && (!mongoDB.isValidID(pid))) {
                 throw new Error(ERROR_INVALID_ID);
             }
