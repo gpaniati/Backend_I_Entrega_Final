@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductsManager from "../managers/ProductsManager.js";
+import ProductsManager from "../managers/ProductsManager.js"
 import uploader from "../utils/uploader.js";
 
 
@@ -40,6 +40,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Endpoint: Método POST que escucha en la URL http://localhost:8080/api/products/
+// Crea un nuevo producto en la BaseAudioContext.
 router.post("/", uploader.single("file"), async (req, res) => {
     try {
         const { file } = req;
