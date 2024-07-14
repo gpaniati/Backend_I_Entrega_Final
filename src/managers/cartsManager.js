@@ -128,9 +128,40 @@ export default class CartManager {
             }
 
             cartFound.products = [];
-            cartFound.save();
+            await cartFound.save();
 
             return cartFound;
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+    deleteProductByCidPid = async (cid, pid) => {
+        try {
+            if ((!mongoDB.isValidID(cid)) && (!mongoDB.isValidID(pid))) {
+                throw new Error(ERROR_INVALID_ID);
+            }
+
+            //Valida si existe el carrito a vaciar.
+            const cartFound = await this.#cartModel.findById(cid);
+
+            if (!cartFound) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            //Si existe el producto, agrega la cantidad pasada desde req.body.
+            const productIndexFound = cartFound.products.findIndex((product) => product.id == pid);
+
+            if (productIndexFound !== -1) {
+
+                cartFound.products.splice(productIndexFound, 1);
+                await cartFound.save();
+                return cartFound;
+
+            } else {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
 
         } catch (error) {
             throw new Error(error.message);
