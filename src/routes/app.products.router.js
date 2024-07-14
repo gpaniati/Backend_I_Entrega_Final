@@ -22,7 +22,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/:pid", async (req, res) => {
     try{
         const productSelected= await productsManager.getOneById(req.params.pid);
-        res.status(200).render("product", { productSelected });
+        res.status(200).render("product", { title: "ModoFit Market / Detalle", productSelected });
     }catch (error) {
         res.status(500).send(`<h1>Error 500</h1><h3>${ERROR_SERVER}</h3>`);
     }
