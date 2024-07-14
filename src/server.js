@@ -1,5 +1,6 @@
 import express from "express";
 import paths from "./utils/paths.js";
+import serverSocket from "./config/socket.config.js";
 import handlebars from "./config/handlebars.config.js";
 import mongoDB from "./config/mongoose.config.js";
 import apiProductsRouter from "./routes/api.products.router.js";
@@ -36,7 +37,10 @@ server.use((error, req, res) => {
 });
 
 // Método oyente de solicitudes
-server.listen(PORT, () => {
+const serverHTTP = server.listen(PORT, () => {
     console.log(`Ejecutándose en http://${HOST}:${PORT}`);
     mongoDB.connectDB();
-});
+ });
+
+// Configuración del servidor de websocket
+serverSocket.config(serverHTTP);
