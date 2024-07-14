@@ -16,7 +16,7 @@ export default class CartManager {
 
     getAll = async () => {
         try {
-            const carts = await this.#cartModel.find().lean();
+            const carts = await this.#cartModel.find();
             return carts;
         }catch(error){
             throw new Error(error.message);
@@ -54,7 +54,7 @@ export default class CartManager {
         }
     };
 
-    updateOneByIds = async (cid, pid) => {
+    updateOneByCidPid = async (cid, pid) => {
         try {
             if ((!mongoDB.isValidID(cid)) && (!mongoDB.isValidID(pid))) {
                 throw new Error(ERROR_INVALID_ID);
@@ -109,6 +109,28 @@ export default class CartManager {
             }else{
                 throw new Error(ERROR_NOT_FOUND_ID);
             }
+        } catch (error) {
+            throw new Error(error.message);
+        };
+    };
+
+    updateOneByCid = async (cid, productsArray) => {
+        try {
+            if (!mongoDB.isValidID(cid)) {
+                return null;
+            }
+
+            console.log(productsArray);
+            const cartFound = await this.#cartModel.findById(cid);
+            if (!cartFound) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            //Updetea los productos con el nuevo array de productos.
+            cartFound.products = productsArray;
+            await cartFound.save();
+            return cartFound;
+
         } catch (error) {
             throw new Error(error.message);
         };

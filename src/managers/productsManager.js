@@ -37,7 +37,7 @@ export default class ProductsManager {
                 lean: true,
             };
 
-            const products = await this.#productModel.paginate(filters, paginationOptions);
+            const products = await this.#productModel.paginate(filters, paginationOptions).lean();
             return products;
 
         }catch(error){
