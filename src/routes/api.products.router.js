@@ -28,11 +28,11 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Endpoint: Método GET que escucha en la URL http://localhost:8080/api/products/:id
+// Endpoint: Método GET que escucha en la URL http://localhost:8080/api/products/:pid
 // Lista el producto de id pasado por parámetro.
-router.get("/:id", async (req, res) => {
+router.get("/:pid", async (req, res) => {
     try {
-        const productFound = await productsManager.getOneById(req.params.id);
+        const productFound = await productsManager.getOneById(req.params.pid);
         res.status(200).json({ status: true, payload: productFound });
     } catch (error) {
         errorHandler(res, error.message);

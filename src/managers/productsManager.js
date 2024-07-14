@@ -37,7 +37,7 @@ export default class ProductsManager {
                 lean: true,
             };
 
-            const products = await this.#productModel.paginate(filters, paginationOptions).lean();
+            const products = await this.#productModel.paginate(filters, paginationOptions);
             return products;
 
         }catch(error){
@@ -51,7 +51,7 @@ export default class ProductsManager {
                 throw new Error(ERROR_INVALID_ID);
             }
 
-            const product = await this.#productModel.findById(id);
+            const product = await this.#productModel.findById(id).lean();
 
             if (!product) {
                 throw new Error(ERROR_NOT_FOUND_ID);

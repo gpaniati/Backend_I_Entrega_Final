@@ -28,9 +28,9 @@ router.get("/", async (req, res) => {
 
 // Endpoint: Método GET que escucha en la URL http://localhost:8080/api/carts/:cid
 // Listar los productos que pertenezcan al carrito con el parámetro cid proporcionados.
-router.get("/:id", async (req, res) => {
+router.get("/:cid", async (req, res) => {
     try {
-        const cartFound = await cartsManager.getOneById(req.params.id);
+        const cartFound = await cartsManager.getOneById(req.params.cid);
         res.status(200).json({ status: true, payload: cartFound });
     } catch (error) {
         errorHandler(res, error.message);
