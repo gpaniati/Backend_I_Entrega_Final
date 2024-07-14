@@ -29,7 +29,7 @@ export default class CartManager {
                 throw new Error(ERROR_INVALID_ID);
             }
 
-            const cart = await this.#cartModel.findById(id).populate("products");
+            const cart = await this.#cartModel.findById(id);
 
             if (!cart) {
                 throw new Error(ERROR_NOT_FOUND_ID);
@@ -43,7 +43,7 @@ export default class CartManager {
 
     insertOne = async () => {
         try {
-            const newCart = new CartModel();
+            const newCart = new CartModel( {products: []});
             await newCart.save();
             return newCart;
         } catch (error) {
@@ -55,7 +55,7 @@ export default class CartManager {
     };
 
     updateOneByIds = async (cid, pid) => {
-        try {Asi
+        try {
             if ((!mongoDB.isValidID(cid)) && (!mongoDB.isValidID(pid))) {
                 throw new Error(ERROR_INVALID_ID);
             }
@@ -66,31 +66,19 @@ export default class CartManager {
             }
 
             //Valida si ya existe el producto a agregar al carrito en el mismo
+            //const productFound = cartFound.products.find((product) => product.id.toString() == pid.toString());
             const productFound = cartFound.products.find((product) => product.id == pid);
             if (!productFound){
-                const newProduct = {
-                    id: pid,
-                    quantity: 1
-                }
-
-                cartFound.products.push(newProduct);
+                //const productId = new mongoose.Types.ObjectId(pid);
+                cartFound.products.push( {_id: pid, quantity: 1 });
                 await cartFound.save();
-
             }else{
-
                 //Si existe, suma 1 ocurrencia al producto agregado y actualiza el carrito
                 const productFilter = cartFound.products.filter((product) => product.id != pid);
 
-                const { id, quantity } = productFound;
-                let quantityN = Number(quantity);
-                quantityN++;
+                productFound.quantity++;
+                productFilter.push(productFound);
 
-                const productUpdated = {
-                    id: pid,
-                    quantity: quantityN
-                }
-
-                productFilter.push(productUpdated);
                 cartFound.products = productFilter;
                 await cartFound.save();
             }
