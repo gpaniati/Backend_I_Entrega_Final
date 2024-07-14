@@ -48,13 +48,43 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Endpoint: Método POST que escucha en la URL http://localhost:8080/api/carts/:cid/products/:pid
-// Agrega un producto al carrito.
+// POST api/carts/:cid/products/:pid
+// Endpoint: Método PUT que escucha en la URL http://localhost:8080/api/carts/:cid/products/:pid
+// Agrega un producto al carrito y si existe le suma 1 a la cantidad.
 router.post('/:cid/products/:pid', async (req, res) => {
     try {
         const { cid, pid } = req.params;
         const cartUpdated = await cartsManager.updateOneByIds(cid, pid);
         res.status(200).json({ status: true, payload: cartUpdated });
+    } catch (error) {
+        errorHandler(res, error.message);
+    }
+});
+
+//****  NUEVOS ENDPONTS*****
+
+// PUT api/carts/:cid/products/:pid
+// Endpoint: Método POST que escucha en la URL http://localhost:8080/api/carts/:cid/products/:pid
+// Agrega un producto al carrito y si existe le suma 1 a la cantidad.
+router.put('/:cid/products/:pid', async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+        const { quantity } = req.body;
+        const cartUpdated = await cartsManager.updateOneByQuantity(cid, pid, quantity);
+        res.status(200).json({ status: true, payload: cartUpdated });
+    } catch (error) {
+        errorHandler(res, error.message);
+    }
+});
+
+// DELETE api/carts/:cid
+// Endpoint: Método DELETE que escucha en la URL http://localhost:8080/api/carts/:cid
+// Elimina todos los producto del carrito
+router.delete('/:cid/', async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const cartDeleted = await cartsManager.deleteProductsByCid (cid);
+        res.status(200).json({ status: true, payload: cartDeleted});
     } catch (error) {
         errorHandler(res, error.message);
     }

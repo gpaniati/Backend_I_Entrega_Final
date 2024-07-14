@@ -66,7 +66,6 @@ export default class CartManager {
             }
 
             //Valida si ya existe el producto a agregar al carrito en el mismo
-            //const productFound = cartFound.products.find((product) => product.id.toString() == pid.toString());
             const productFound = cartFound.products.find((product) => product.id == pid);
             if (!productFound){
                 //const productId = new mongoose.Types.ObjectId(pid);
@@ -83,8 +82,58 @@ export default class CartManager {
                 await cartFound.save();
             }
         return cartFound;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
+        } catch (error) {
+            throw new Error(error.message);
+        };
+    };
+
+    updateOneByQuantity = async (cid, pid, quantity) => {
+        try {
+            if ((!mongoDB.isValidID(cid)) && (!mongoDB.isValidID(pid))) {
+                throw new Error(ERROR_INVALID_ID);
+            }
+
+            const cartFound = await this.#cartModel.findById(cid);
+            if (!cartFound) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            //Si existe el producto, agrega la cantidad pasada desde req.body.
+            const productIndexFound = cartFound.products.findIndex((product) => product.id == pid);
+            if (productIndexFound !== -1){
+
+                cartFound.products[productIndexFound].quantity = quantity;
+                await cartFound.save();
+                return cartFound;
+
+            }else{
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        };
+    };
+
+    deleteProductsByCid = async (cid) => {
+        try {
+            if (!mongoDB.isValidID(cid)) {
+                throw new Error(ERROR_INVALID_ID);
+            }
+
+            //Valida si existe el carrito a vaciar.
+            const cartFound = await this.#cartModel.findById(cid);
+
+            if (!cartFound) {
+                throw new Error(ERROR_NOT_FOUND_ID);
+            }
+
+            cartFound.products = [];
+            cartFound.save();
+
+            return cartFound;
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
 }
