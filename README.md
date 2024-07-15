@@ -9,12 +9,15 @@
 **Definiciones**
 - En la carpeta demo del proyecto se encuentra las demos para consultar por filtros/ordenamiento/Paginacion, añadir un producto (POST) y modificarlo (PUT) desde la api expuesta
   http://localhost:8080/api/products
-  
+
 - Tambien se puede paginar, ordenar y filtrar desde la vista index.handlebars. Los filtros son por categoria.
   Ejemplos:
   * http://localhost:8080/products?category=bebidas
   * http://localhost:8080/products?category=desayuno
   * http://localhost:8080/products?category=mermeladas
+
+- Carts con populate.
+- http://localhost:8080/api/carts/:cid
 
 
 **Socket**
