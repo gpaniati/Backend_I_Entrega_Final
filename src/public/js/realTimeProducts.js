@@ -6,7 +6,7 @@ const crearCarta = (producto) => {
     return (`
             <div class="col-md-4 d-flex justify-content-around">
                 <div class="card mb-4" style="width: 20rem">
-                    <img src="${producto.thumbnails}" class="card-img-top" alt="${producto.code}">
+                    <img src="./public/images/${producto.thumbnails}" class="card-img-top" alt="${producto.code}">
                     <div class="card-body">
                         <h5 class="card-title">${producto.title}</h5>
                         <p class="card-text">${producto.description}</p>
@@ -23,7 +23,7 @@ const renderizarProductos = (productos) => {
     //Selecciono el contenedor de la carta del layout realTimeProducts
     const cardsContainer = document.getElementById('cards-container');
     cardsContainer.innerHTML = ``;
-    productos.forEach( producto => {
+    productos.docs.forEach( producto => {
         const cardHTML = crearCarta(producto);
         cardsContainer.innerHTML += cardHTML;
     });
@@ -118,6 +118,7 @@ socket.on("cliente-conectado", (productos) => {
 
 //Renderiza los productos de la base frente a la accion de algun cliente sobre la misma (Eliminar producto/ Crear Producto).
 socket.on("renderizar-base", (productos) => {
+    console.log(productos);
     renderizarProductos(productos);
 });
 

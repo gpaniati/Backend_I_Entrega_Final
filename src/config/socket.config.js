@@ -1,16 +1,15 @@
 import { Server } from "socket.io";
-import ProductManager from "../managers/productsManager.js";
-
-const baseProducts = new ProductManager();
+import ProductsManager from "../managers/ProductsManager.js";
+const productsManager = new ProductsManager();
 
 const config = (serverHTTP) => {
     const serverSocket = new Server(serverHTTP);
 
     serverSocket.on("connection", async (socket) => {
-        //console.log("Cliente conectado");
+        console.log("Cliente conectado");
 
         //Obtiene los productos de la base de productos y emite mensaje para renderizar productos del lado del cliente.
-        const productos = await baseProducts.consultarProductos()
+        const productos = await productsManager.getAll({});
         socket.emit("cliente-conectado", productos);
 
 
