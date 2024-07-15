@@ -1,6 +1,5 @@
 //Lado del cliente.
 const socket = io();
-
 //Devuelve la estructura html de una Card de Boostrap.
 const crearCarta = (producto) => {
     return (`
@@ -11,8 +10,9 @@ const crearCarta = (producto) => {
                         <h5 class="card-title">${producto.title}</h5>
                         <p class="card-text">${producto.description}</p>
                         <p class="card-text">Precio: $${producto.price}</p>
+                        <p class="card-text">Id: $${producto._id}</p>
                         <button type="button" class="btn btn-danger"
-                            onclick="eliminarProducto('${producto.id}')">Eliminar</button>
+                            onclick="eliminarProducto('${producto._id}')">Eliminar</button>
                     </div>
                 </div>
     `);
@@ -23,7 +23,7 @@ const renderizarProductos = (productos) => {
     //Selecciono el contenedor de la carta del layout realTimeProducts
     const cardsContainer = document.getElementById('cards-container');
     cardsContainer.innerHTML = ``;
-    productos.docs.forEach( producto => {
+    productos.forEach( producto => {
         const cardHTML = crearCarta(producto);
         cardsContainer.innerHTML += cardHTML;
     });

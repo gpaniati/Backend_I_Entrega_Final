@@ -6,18 +6,18 @@ const config = (serverHTTP) => {
     const serverSocket = new Server(serverHTTP);
 
     serverSocket.on("connection", async (socket) => {
-        console.log("Cliente conectado");
+        //console.log("Cliente conectado");
 
         //Obtiene los productos de la base de productos y emite mensaje para renderizar productos del lado del cliente.
-        const productos = await productsManager.getAll({});
+        const productos = await productsManager.getAllReal();
         socket.emit("cliente-conectado", productos);
 
 
         //Elimina producto de la base y emite un mensaje a todos los usuarios conectados.
         socket.on("eliminar-producto", async ( id ) => {
             try {
-                await baseProducts.eliminarProducto(id);
-                const productosActualizados = await baseProducts.consultarProductos();
+                await productsManager.deleteOneById(id);
+                const productosActualizados = await productsManager.getAllReal();
 
                 //Emite mensaje para renderizar productos frente a la eliminacion de uno.
                 serverSocket.emit("renderizar-base", productosActualizados);
