@@ -17,10 +17,10 @@ const config = (serverHTTP) => {
         //Elimina producto de la base y emite un mensaje a todos los usuarios conectados.
         socket.on("eliminar-producto", async ( id ) => {
             try {
-                const queryParams = url.parse(socket.handshake.headers.referer, true).query;
+                //const queryParams = url.parse(socket.handshake.headers.referer, true).query;
                 await productsManager.deleteOneById(id);
 
-                const productosActualizados = await productsManager.getAll(queryParams);
+                const productosActualizados = await productsManager.getAll({});
 
                 //Emite mensaje para renderizar productos frente a la eliminacion de uno.
                 serverSocket.emit("renderizar-base", productosActualizados);

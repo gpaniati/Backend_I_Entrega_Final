@@ -17,9 +17,35 @@ const crearCarta = (producto) => {
     `);
 }
 
-//Renderiza los productos en el contenerdor de cartas del layout realTimeProducts.
+//Devuelve la estructura html de los botones.
+const crearBotonesPaginado = (products) => {
+    return (`
+            <div>
+                <a href="/realtimeproducts?page={{${products.prevPage}}"><button>Anterior</button></a>
+                <a href="/realtimeproducts?page=${products.nextPage}${products.sort}"><button>Siguiente</button></a>
+
+                <a href="/realtimeproducts?page=${products.page}&sort=0"><button>Menor Precio ⬇</button></a>
+                <a href="/realtimeproducts?page=${products.page}&sort=1"><button>Mayor Precio ⬆</button></a>
+                <a href="/realtimeproducts?page=${products.page}"><button>Sacar Orden ⬌</button></a>
+
+                <p>
+                    Página <span id="page">${products.page}</span> de <span id="total-pages">${products.totalPages} -
+                    </span>
+                    Total <span>${products.totalDocs}</span> Productos
+                </p>
+    `);
+}
+
+//Renderiza los productos en el contenerdor de cartas y botones del layout realTimeProducts.
 const renderizarProductos = (productos) => {
-    //Selecciono el contenedor de la carta del layout realTimeProducts
+
+    //Selecciono el contenedor de los botones del layout realTimeProducts.
+    const buttonsContainer = document.getElementById('buttons-container');
+    buttonsContainer.innerHTML = ``;
+    const buttonsHTML = crearBotonesPaginado(productos);
+    buttonsContainer.innerHTML += buttonsHTML;
+
+    //Selecciono el contenedor de la carta del layout realTimeProducts.
     const cardsContainer = document.getElementById('cards-container');
     cardsContainer.innerHTML = ``;
     productos.docs.forEach( producto => {
