@@ -10,7 +10,6 @@ const crearCarta = (producto) => {
                         <h5 class="card-title">${producto.title}</h5>
                         <p class="card-text">${producto.description}</p>
                         <p class="card-text">Precio: $${producto.price}</p>
-                        <p class="card-text">Id: $${producto._id}</p>
                         <button type="button" class="btn btn-danger"
                             onclick="eliminarProducto('${producto._id}')">Eliminar</button>
                     </div>
@@ -36,10 +35,11 @@ const eliminarProducto = (id) => {
 
 //Crea un nuevo producto en base a los datos ingredados en el formulario.
 const crearProducto = () => {
+    console.log("paso0");
     const entradasFormulario = document.getElementById('form-crearProducto');
     let i = 0;
     let faltanDatosEntrada = false;
-
+    console.log("paso0");
     //Valida que se informen todos los datos de entrada.
     while ((i < entradasFormulario.length)&&(!faltanDatosEntrada)) {
         if (entradasFormulario[i].type !== "button"){
@@ -54,17 +54,17 @@ const crearProducto = () => {
         }
         i++;
     }
+
     if (!faltanDatosEntrada) {
         //Defino nuevo producto.
         const nuevoProducto = {
-        title: (document.getElementById("titulo")).value,
-        description: (document.getElementById("descripcion")).value,
-        code: (document.getElementById("codigo")).value,
-        price: (document.getElementById("precio")).value,
-        status: true,
-        stock: (document.getElementById("stock")).value,
-        category: (document.getElementById("categoria")).value,
-        thumbnails: "https://i.ibb.co/BCP4y5H/modofit-producto-sin-imagen.png"
+            title: (document.getElementById("titulo")).value,
+            description: (document.getElementById("descripcion")).value,
+            code: (document.getElementById("codigo")).value,
+            price: (document.getElementById("precio")).value,
+            status: true,
+            stock: (document.getElementById("stock")).value,
+            category: (document.getElementById("categoria")).value
         };
 
         //Limpiar formulario.

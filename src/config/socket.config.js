@@ -36,14 +36,16 @@ const config = (serverHTTP) => {
         //Inserta producto en la de la base y emite un mensaje a todos los usuarios conectados.
         socket.on("crear-producto", async ( producto ) => {
             try {
-                //Agrega producto nuevo y lo persiste.
-                const { title, description, code, price, status, stock, category, thumbnails } = producto;
-                await baseProducts.agregarProducto(title, description, code, Number(price), Boolean(status), Number(stock), category, thumbnails);
+                //Toma esta imagen por default. No viene en el formulario.
+                const thumbnails = "../public/images/modofit_producto_sin_imagen.png";
+
+                console.log(producto);
+                await productsManager.insertOne(producto, thumbnails);
 
                 //Emite mensaje para renderizar productos frente a la creacion uno nuevo.
-                const productosActualizados = await baseProducts.consultarProductos();
-                serverSocket.emit("renderizar-base", productosActualizados);
+                const productosActualizados = await productsManager.getAllReal();
 
+                serverSocket.emit("renderizar-base", productosActualizados);
                 //Emite notificación al usuario que creó el producto correctamente.
                 socket.emit("producto-creado-autor");
             }catch (error){
