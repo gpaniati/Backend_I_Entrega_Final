@@ -8,14 +8,15 @@
     <section>
         <div class="d-flex justify-content-center flex-wrap">
             Seleccione un carrito&nbsp;
-            <select name="comboCarts" class="form-select form-select-sm" aria-label=".form-select-sm example">
-                <option selected>Abrir el menú de carritos</option>
-                <div id="select-cart">
-                    {{#each data.carts}}
-                    <option>{{this._id}}</option>
-                    {{/each}}
-                </div>
-            </select>
+            <form id="form-carritos">
+                <select id="select-carritos">
+                    <div>
+                        {{#each data.carts}}
+                        <option>{{this._id}}</option>
+                        {{/each}}
+                    </div>
+                </select>
+            </form>
         </div>
     </section>
     <hr>
