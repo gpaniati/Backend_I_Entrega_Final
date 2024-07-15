@@ -79,7 +79,7 @@ export default class ProductsManager {
     insertOne = async (data, file) => {
         try{
             const productCreated = new ProductModel(data);
-            console.log(productCreated);
+
             productCreated.thumbnails = file?.filename ?? null;
 
             await productCreated.save();

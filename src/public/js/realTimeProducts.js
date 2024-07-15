@@ -22,7 +22,7 @@ const renderizarProductos = (productos) => {
     //Selecciono el contenedor de la carta del layout realTimeProducts
     const cardsContainer = document.getElementById('cards-container');
     cardsContainer.innerHTML = ``;
-    productos.forEach( producto => {
+    productos.docs.forEach( producto => {
         const cardHTML = crearCarta(producto);
         cardsContainer.innerHTML += cardHTML;
     });
