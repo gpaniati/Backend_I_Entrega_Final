@@ -6,25 +6,41 @@
 <main>
     <hr>
     <section>
-        <div class="container mt-3"></div>
-        <h3 class="mb-3" style="text-align: center;">Detalle de Producto</h3>
+        <div class="d-flex justify-content-center flex-wrap">
+            Seleccione un carrito&nbsp;
+            <select name="comboCarts" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option selected>Abrir el menú de carritos</option>
+                <div id="select-cart">
+                    {{#each data.carts}}
+                    <option>{{this._id}}</option>
+                    {{/each}}
+                </div>
+            </select>
+        </div>
+    </section>
+    <hr>
+    <section>
+        <div class="container mt-3">
+            <h3 class="mb-3" style="text-align: center;">Detalle de Producto</h3>
         </div>
         <div class="d-flex justify-content-around flex-wrap">
             <div class="col-md-4 d-flex justify-content-around">
                 <div class="card mb-4" style="width: 25rem">
-                    <img src=../public/images/{{productSelected.thumbnails}} class="card-img-top"
+                    <img src=../public/images/{{data.product.thumbnails}} class="card-img-top"
                         alt="{{productSelected.code}}">
                     <div class="card-body">
-                        <h5 class="card-title">{{productSelected.title}}</h5>
-                        <p class="card-text"><strong>Descripción Completa: </strong>{{productSelected.description}}</p>
-                        <p class="card-text"><strong>Código: </strong>{{productSelected.code}}</p>
-                        <p class="card-text"><strong>Id. de Produto: </strong>{{productSelected._id}}</p>
-                        <p class="card-text"><strong>Stock: </strong>{{productSelected.stock}} unidades</p>
-                        <p class="card-text"><strong>Categoria: </strong>{{productSelected.category}}</p>
-                        <p class="card-text"><strong>Precio: </strong>${{productSelected.price}}</p>
+                        <h5 class="card-title">{{data.product.title}}</h5>
+                        <p class="card-text"><strong>Descripción Completa: </strong>{{data.product.description}}</p>
+                        <p class="card-text"><strong>Código: </strong>{{data.product.code}}</p>
+                        <p class="card-text"><strong>Id. de Produto: </strong>{{data.product._id}}</p>
+                        <p class="card-text"><strong>Stock: </strong>{{data.product.stock}} unidades</p>
+                        <p class="card-text"><strong>Categoria: </strong>{{data.product.category}}</p>
+                        <p class="card-text"><strong>Precio: </strong>${{data.product.price}}</p>
                     </div>
                     <div class="d-flex justify-content-around">
-                        <button type="button" class="btn btn-primary">Agregar al carrito</button>
+                        <button type="button" class="btn btn-primary"
+                            onclick="agregarAlCarrito('{{data.product._id}}')">Agregar al
+                            carrito</button>
                         <a href="/products">
                             <button type="button" class="btn btn-secondary">Volver</button>
                         </a>
@@ -34,3 +50,4 @@
         </div>
     </section>
 </main>
+<script src="/public/js/products.js"></script>

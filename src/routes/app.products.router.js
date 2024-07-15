@@ -1,10 +1,12 @@
 import { Router } from "express";
 import ProductsManager from "../managers/ProductsManager.js"
+import CartsManager from "../managers/CartsManager.js"
 import { ERROR_SERVER } from "../constants/messages.constant.js";
 
 const router = Router();
 
 const productsManager = new ProductsManager();
+const cartsManager = new CartsManager();
 
 // Endpoint: Método GET que escucha en la URL http://localhost:8080/products
 // Listar todos los productos de la base usando solo handlebars filtrado por los parametros q lleguen.
@@ -22,7 +24,15 @@ router.get("/products", async (req, res) => {
 router.get("/products/:pid", async (req, res) => {
     try{
         const productSelected= await productsManager.getOneById(req.params.pid);
-        res.status(200).render("product", { title: "ModoFit Market / Detalle", productSelected });
+        const cartsFound= await cartsManager.getAll();
+
+        //Datos para pasar a la vista productos.
+        const data = {
+            product : productSelected,
+            carts: cartsFound
+        }
+
+        res.status(200).render("product", { title: "ModoFit Market / Detalle", data });
     }catch (error) {
         res.status(500).send(`<h1>Error 500</h1><h3>${ERROR_SERVER}</h3>`);
     }
