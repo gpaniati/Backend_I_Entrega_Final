@@ -94,6 +94,19 @@ export default class ProductsManager {
         }
     };
 
+    insertOneDefault = async (data, file) => {
+        try{
+            const productCreated = new ProductModel(data);
+            productCreated.thumbnails = file;
+
+            await productCreated.save();
+            return productCreated;
+        }catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+
     updateOneById = async (id, data, file) => {
         try {
             if (!mongoDB.isValidID(id)) {

@@ -61,11 +61,9 @@ const eliminarProducto = (id) => {
 
 //Crea un nuevo producto en base a los datos ingredados en el formulario.
 const crearProducto = () => {
-    console.log("paso0");
     const entradasFormulario = document.getElementById('form-crearProducto');
     let i = 0;
     let faltanDatosEntrada = false;
-    console.log("paso0");
     //Valida que se informen todos los datos de entrada.
     while ((i < entradasFormulario.length)&&(!faltanDatosEntrada)) {
         if (entradasFormulario[i].type !== "button"){
@@ -144,7 +142,7 @@ socket.on("cliente-conectado", (productos) => {
 
 //Renderiza los productos de la base frente a la accion de algun cliente sobre la misma (Eliminar producto/ Crear Producto).
 socket.on("renderizar-base", (productos) => {
-    console.log(productos);
+    //console.log(productos);
     renderizarProductos(productos);
 });
 

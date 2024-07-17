@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import ProductsManager from "../managers/ProductsManager.js";
 import url from "url";
+import uploader from "../utils/uploader.js";
+
 const productsManager = new ProductsManager();
 
 const config = (serverHTTP) => {
@@ -40,12 +42,8 @@ const config = (serverHTTP) => {
         socket.on("crear-producto", async ( producto ) => {
             try {
                 const queryParams = url.parse(socket.handshake.headers.referer, true).query;
-
-                //Toma esta imagen por default. No viene en el formulario.
-                const thumbnails = "../public/images/modofit_producto_sin_imagen.png";
-
-                console.log(producto);
-                await productsManager.insertOne(producto, thumbnails);
+                const fileDefault = "modofit_producto_sin_imagen.png";
+                await productsManager.insertOneDefault(producto, fileDefault);
 
                 //Emite mensaje para renderizar productos frente a la creacion uno nuevo.
                 const productosActualizados = await productsManager.getAll(queryParams);
