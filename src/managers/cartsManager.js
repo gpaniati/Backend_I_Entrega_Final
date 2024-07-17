@@ -99,7 +99,7 @@ export default class CartManager {
             }
 
             //Si existe el producto, agrega la cantidad pasada desde req.body.
-            const productIndexFound = cartFound.products.findIndex((product) => product.id == pid);
+            const productIndexFound = cartFound.products.findIndex((product) => product._id._id.toString() == pid.toString());
             if (productIndexFound !== -1){
 
                 cartFound.products[productIndexFound].quantity = quantity;
@@ -120,7 +120,7 @@ export default class CartManager {
                 return null;
             }
 
-            console.log(productsArray);
+            //console.log(productsArray);
             const cartFound = await this.#cartModel.findById(cid);
             if (!cartFound) {
                 throw new Error(ERROR_NOT_FOUND_ID);
@@ -173,7 +173,7 @@ export default class CartManager {
             }
 
             //Si existe el producto, agrega la cantidad pasada desde req.body.
-            const productIndexFound = cartFound.products.findIndex((product) => product.id == pid);
+            const productIndexFound = cartFound.products.findIndex((product) => product._id._id.toString() == pid.toString());
 
             if (productIndexFound !== -1) {
 
