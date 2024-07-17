@@ -15,7 +15,6 @@ export default class ProductsManager {
         this.#productModel = ProductModel;
     }
 
-    //Obtiene todos los productos sin paginado para el realTime. No me salió obtener los query params por socket para paginar.
     getAllReal = async () => {
         try {
 

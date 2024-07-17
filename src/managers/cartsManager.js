@@ -29,7 +29,7 @@ export default class CartManager {
                 throw new Error(ERROR_INVALID_ID);
             }
 
-            const cart = await this.#cartModel.findById(id);
+            const cart = await this.#cartModel.findById(id).lean();
 
             if (!cart) {
                 throw new Error(ERROR_NOT_FOUND_ID);
@@ -66,14 +66,14 @@ export default class CartManager {
             }
 
             //Valida si ya existe el producto a agregar al carrito en el mismo
-            const productFound = cartFound.products.find((product) => product.id == pid);
+            const productFound = cartFound.products.find((product) => product._id._id.toString() == pid.toString());
             if (!productFound){
                 //const productId = new mongoose.Types.ObjectId(pid);
                 cartFound.products.push( {_id: pid, quantity: 1 });
                 await cartFound.save();
             }else{
                 //Si existe, suma 1 ocurrencia al producto agregado y actualiza el carrito
-                const productFilter = cartFound.products.filter((product) => product.id != pid);
+                const productFilter = cartFound.products.filter((product) => product._id._id.toString() != pid.toString());
 
                 productFound.quantity++;
                 productFilter.push(productFound);

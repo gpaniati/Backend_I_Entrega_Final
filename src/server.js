@@ -6,6 +6,7 @@ import mongoDB from "./config/mongoose.config.js";
 import apiProductsRouter from "./routes/api.products.router.js";
 import appProductsRouter from "./routes/app.products.router.js";
 import apiCartsRouter from "./routes/api.carts.router.js";
+import appCartsRouter from "./routes/app.carts.router.js";
 
 const server = express();
 const PORT = 8080;
@@ -19,6 +20,7 @@ server.use("/public", express.static(paths.public));
 
 // Definición de enrutadores.
 server.use("/", appProductsRouter);
+server.use("/", appCartsRouter);
 server.use("/api/products", apiProductsRouter);
 server.use("/api/carts", apiCartsRouter);
 

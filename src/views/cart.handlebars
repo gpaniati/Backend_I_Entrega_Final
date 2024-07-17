@@ -1,0 +1,20 @@
+<header>
+    <div class="container mt-3">
+        <h1 class="mb-3" style="text-align: center;">ModoFit Market - Carrito de compras</h1>
+    </div>
+</header>
+<main>
+    <hr>
+    <section>
+        <ul class="list-group">
+            {{#each products}}
+            <li class="list-group-item d-flex justify-content-around align-items-center">
+                <img src=../public/images/{{this._id.thumbnails}} alt="{{this._id.code}}" width="80" height="80">
+                <p>{{this._id.title}}</p>
+                <p>${{this._id.price}}</p>
+                <span class="badge badge-primary badge-pill">{{this.quantity}}</span>
+            </li>
+            {{/each}}
+        </ul>
+    </section>
+</main>
