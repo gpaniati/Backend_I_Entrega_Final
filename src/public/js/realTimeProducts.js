@@ -12,6 +12,9 @@ const crearCarta = (producto) => {
                         <p class="card-text">Precio: $${producto.price}</p>
                         <button type="button" class="btn btn-danger"
                             onclick="eliminarProducto('${producto._id}')">Eliminar</button>
+                        <a href="/products/${producto._id}">
+                            <button type="button" class="btn btn-primary">Ver detalle</button>
+                        </a>
                     </div>
                 </div>
     `);
