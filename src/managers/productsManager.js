@@ -161,7 +161,9 @@ export default class ProductsManager {
             }
 
             await this.#productModel.findByIdAndDelete(id);
-            await fileSystem.deleteImage(product.thumbnails);
+            if (product.thumbnails != "modofit_producto_sin_imagen.png"){
+                await fileSystem.deleteImage(product.thumbnails);
+            }
 
             return product;
         } catch (error) {
